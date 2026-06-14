@@ -236,6 +236,7 @@ section{ position:relative; z-index:2; }
 .nav-links a:hover::after, .nav-links a:focus-visible::after{ width:100%; }
 .nav-links a.active{ color:var(--gold-deep); }
 .nav-links a.active::after{ width:100%; }
+.menu-label, .menu-contact{ display:none; }
 
 .nav-toggle{
   display:none; flex-direction:column; gap:5px; width:30px; height:24px;
@@ -655,26 +656,64 @@ section{ position:relative; z-index:2; }
   body::before{ display:none; } /* skip grain overlay on mobile — costly to composite while scrolling */
   .nav-toggle{ display:flex; }
   .nav-links{
-    position:fixed; inset:0; background:var(--linen);
-    flex-direction:column; justify-content:center; gap:2.2rem;
+    position:fixed; inset:0; z-index:90;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.2rem;
+    padding:5.5rem 1.5rem 2.4rem; overflow-y:auto;
+    background:
+      radial-gradient(135% 80% at 50% 15%, rgba(168,144,106,.22), rgba(168,144,106,0) 58%),
+      linear-gradient(180deg, #423629 0%, #312922 100%);
     transform:translateY(-100%); transition:transform .55s var(--ease);
-    z-index:90;
   }
-  .nav-links a{ font-size:1rem; letter-spacing:.22em; padding:.5rem 1.5rem; opacity:0; transform:translateY(12px); transition:opacity .45s var(--ease), transform .45s var(--ease); }
-  .nav-links a::after{ display:none; }
+  .nav-links::before{ /* faint enso watermark behind the menu */
+    content:""; position:absolute; left:50%; top:47%; transform:translate(-50%,-50%);
+    width:min(70vw,330px); height:min(70vw,330px); pointer-events:none;
+    background:url('logo-hero.png') no-repeat center / contain; opacity:.09;
+  }
+  .nav-links .menu-label{
+    display:block; position:relative; font-family:var(--label); font-size:.6rem;
+    letter-spacing:.34em; text-transform:uppercase; color:var(--gold); margin-bottom:1.6rem;
+    opacity:0; transform:translateY(12px); transition:opacity .45s var(--ease), transform .45s var(--ease);
+  }
+  .nav-links > a{
+    position:relative; font-family:var(--serif); font-weight:500; text-transform:none;
+    font-size:2rem; letter-spacing:.01em; color:var(--parchment);
+    padding:.4rem 1rem; line-height:1.2;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .45s var(--ease), transform .45s var(--ease), color .3s;
+  }
+  .nav-links > a::after{ display:none; }
+  .nav-links > a.active, .nav-links > a:hover, .nav-links > a:focus-visible{ color:#FFFDF8; }
+  .menu-contact{
+    display:flex; position:relative; margin-top:2rem; gap:1.6rem; align-items:center;
+    opacity:0; transform:translateY(12px); transition:opacity .45s var(--ease), transform .45s var(--ease);
+  }
+  .menu-contact::before{
+    content:""; position:absolute; top:-1rem; left:50%; transform:translateX(-50%);
+    width:48px; height:1px; background:rgba(201,185,154,.5);
+  }
+  .menu-contact a{ font-family:var(--label); font-size:.64rem; letter-spacing:.18em; text-transform:uppercase; color:var(--parchment); }
+  .menu-contact a:hover{ color:#FFFDF8; }
   body.nav-open .nav-links{ transform:translateY(0); }
-  body.nav-open .nav-links a{ opacity:1; transform:none; }
-  body.nav-open .nav-links a:nth-child(1){ transition-delay:.16s; }
-  body.nav-open .nav-links a:nth-child(2){ transition-delay:.22s; }
-  body.nav-open .nav-links a:nth-child(3){ transition-delay:.28s; }
-  body.nav-open .nav-links a:nth-child(4){ transition-delay:.34s; }
-  body.nav-open .nav-links a:nth-child(5){ transition-delay:.4s; }
-  body.nav-open .nav-links a:nth-child(6){ transition-delay:.46s; }
-  body.nav-open .nav-links a:nth-child(7){ transition-delay:.52s; }
+  body.nav-open .nav-links > a,
+  body.nav-open .menu-label,
+  body.nav-open .menu-contact{ opacity:1; transform:none; }
+  body.nav-open .menu-label{ transition-delay:.08s; }
+  body.nav-open .nav-links > a:nth-of-type(1){ transition-delay:.14s; }
+  body.nav-open .nav-links > a:nth-of-type(2){ transition-delay:.2s; }
+  body.nav-open .nav-links > a:nth-of-type(3){ transition-delay:.26s; }
+  body.nav-open .nav-links > a:nth-of-type(4){ transition-delay:.32s; }
+  body.nav-open .nav-links > a:nth-of-type(5){ transition-delay:.38s; }
+  body.nav-open .nav-links > a:nth-of-type(6){ transition-delay:.44s; }
+  body.nav-open .nav-links > a:nth-of-type(7){ transition-delay:.5s; }
+  body.nav-open .menu-contact{ transition-delay:.56s; }
+  body.nav-open .nav{ background:transparent !important; box-shadow:none !important; }
+  body.nav-open .nav-wordmark{ color:var(--parchment); }
+  body.nav-open .nav-toggle span{ background:var(--parchment); }
   body.nav-open .nav-toggle span:nth-child(1){ transform:translateY(6.5px) rotate(45deg); }
   body.nav-open .nav-toggle span:nth-child(2){ opacity:0; }
   body.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); }
   body.nav-open{ overflow:hidden; }
+  html:has(.nav-open){ overflow:hidden; }
   .event-head{ grid-template-columns:64px 1fr; gap:1rem; }
   .event-cat{ display:none; }
   .event-toggle{ display:none; }
@@ -738,6 +777,7 @@ section{ position:relative; z-index:2; }
       <span></span><span></span><span></span>
     </button>
     <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <span class="menu-label" aria-hidden="true">House of Ayaat</span>
       <a href="#about">About</a>
       <a href="#book">Books</a>
       <a href="#events">Events</a>
@@ -745,6 +785,10 @@ section{ position:relative; z-index:2; }
       <a href="#journal">Journal</a>
       <a href="#collections">Collections</a>
       <a href="#footer">Contact</a>
+      <span class="menu-contact">
+        <a href="mailto:houseofayaat@outlook.com">Email</a>
+        <a href="https://www.instagram.com/house_of_ayaat" target="_blank" rel="noopener">Instagram</a>
+      </span>
     </nav>
   </div>
 </header>
