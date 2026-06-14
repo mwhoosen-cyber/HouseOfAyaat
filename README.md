@@ -14,11 +14,13 @@ Highlights:
 
 ## Deployment (GitHub Pages)
 
-1. Push to the `main` branch (already configured).
-2. In the repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch `main`, folder `/ (root)`.
-3. The site publishes at `https://mwhoosen-cyber.github.io/HouseOfAyaat/`.
+Served via GitHub Pages on the custom domain **[houseofayaat.co.za](https://houseofayaat.co.za/)** (configured by the `CNAME` file).
 
-> The social-share image and canonical URLs in `index.html` point at the GitHub Pages address. If you move to a custom domain, update the `og:url`, `og:image`, `twitter:image` and `canonical` tags in the `<head>`.
+1. Push to the `main` branch.
+2. In the repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch `main`, folder `/ (root)`.
+3. Under **Custom domain**, keep `houseofayaat.co.za` and enable **Enforce HTTPS**.
+
+> The social-share image, canonical and Open Graph URLs in `index.html` use the custom domain. If the domain ever changes, update the `CNAME` file and the `og:url`, `og:image`, `twitter:image` and `canonical` tags in the `<head>`.
 
 ## Editing content
 
