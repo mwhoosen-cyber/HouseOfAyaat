@@ -706,7 +706,9 @@ section{ position:relative; z-index:2; }
   body.nav-open .nav-links > a:nth-of-type(6){ transition-delay:.44s; }
   body.nav-open .nav-links > a:nth-of-type(7){ transition-delay:.5s; }
   body.nav-open .menu-contact{ transition-delay:.56s; }
-  body.nav-open .nav{ background:transparent !important; box-shadow:none !important; }
+  /* drop the blur while the menu is open — a backdrop-filter on the nav would
+     otherwise become the containing block for the fixed overlay and shrink it */
+  body.nav-open .nav{ background:transparent !important; box-shadow:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
   body.nav-open .nav-wordmark{ color:var(--parchment); }
   body.nav-open .nav-toggle span{ background:var(--parchment); }
   body.nav-open .nav-toggle span:nth-child(1){ transform:translateY(6.5px) rotate(45deg); }
