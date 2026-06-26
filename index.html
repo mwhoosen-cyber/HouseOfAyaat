@@ -134,6 +134,33 @@ a,button{ -webkit-tap-highlight-color:transparent; }
 .to-top svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 body.nav-open .to-top{ opacity:0 !important; pointer-events:none !important; }
 
+/* ==============================
+   ANNOUNCEMENT BANNER (top strip)
+   Shows when there are upcoming events flagged "featured" in admin.
+   ============================== */
+.announce{
+  position:relative; z-index:90;
+  background:linear-gradient(90deg, var(--ink) 0%, #2c2319 50%, var(--ink) 100%);
+  color:var(--linen); overflow:hidden;
+  border-bottom:1px solid rgba(168,144,106,.35);
+}
+.announce-track{
+  display:flex; gap:3rem; padding:.7rem 0; white-space:nowrap;
+  font-family:var(--label); font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--parchment); text-decoration:none;
+  animation:announceScroll 40s linear infinite;
+  will-change:transform;
+}
+.announce-track:hover{ animation-play-state:paused; color:#fff; }
+.announce-item{ display:inline-flex; align-items:center; gap:.7rem; }
+.announce-item .dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); flex:0 0 5px; }
+.announce-item .dt{ color:var(--gold); }
+@keyframes announceScroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+@media (prefers-reduced-motion: reduce){
+  .announce-track{ animation:none; flex-wrap:wrap; white-space:normal; justify-content:center; padding:.7rem 1rem; }
+}
+body.admin-open .announce{ display:none; }
+
 /* skip link */
 .skip{
   position:absolute; left:-999px; top:0; z-index:200;
@@ -595,29 +622,57 @@ section{ position:relative; z-index:2; }
    ========================================================= */
 .collections{ background:linear-gradient(180deg,#ECE7DD,#F0EDE6); }
 .collections-intro{ max-width:720px; margin:0 auto clamp(2.5rem,5vw,3.4rem); text-align:center; color:var(--umber); font-size:1.08rem; }
-.series-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.4rem; max-width:980px; margin:0 auto; }
+.series-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; max-width:1100px; margin:0 auto; align-items:stretch; }
 .series-card{
   background:#FFFDF8; border:1px solid rgba(168,144,106,.28); border-top:3px solid var(--gold);
-  padding:2.4rem 2.1rem; display:flex; flex-direction:column; gap:1rem;
+  padding:2.2rem 1.9rem; display:flex; flex-direction:column; gap:.9rem;
   box-shadow:0 18px 40px -34px rgba(61,50,40,.4);
 }
 .series-card .series-kicker{ font-family:var(--label); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-deep); }
-.series-card h3{ font-family:var(--serif); font-weight:600; font-size:1.65rem; margin:0; line-height:1.12; }
-.series-card p{ margin:0; color:var(--umber); font-size:1rem; line-height:1.7; }
-.series-card .excerpt{ font-family:var(--serif); font-style:italic; font-size:1.2rem; color:var(--ink); line-height:1.5; }
+.series-card h3{ font-family:var(--serif); font-weight:600; font-size:1.55rem; margin:0; line-height:1.12; }
+.series-card p{ margin:0; color:var(--umber); font-size:.98rem; line-height:1.65; flex:1; }
+.series-card .series-cta{ margin-top:.4rem; font-family:var(--label); font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); }
+.series-card .series-cta .arr{ display:inline-block; margin-left:.35em; transition:transform .35s var(--ease); }
+
+/* tab variant — clickable card that selects which letter is shown */
+.series-tab{
+  font:inherit; color:inherit; text-align:left; cursor:pointer;
+  width:100%; appearance:none; -webkit-appearance:none;
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease), border-color .35s var(--ease), background .35s var(--ease);
+}
+.series-tab:hover{ transform:translateY(-4px); border-color:var(--gold); box-shadow:0 26px 48px -34px rgba(61,50,40,.5); }
+.series-tab:hover .series-cta .arr{ transform:translateX(4px); }
+.series-tab:focus-visible{ outline:2px solid var(--gold); outline-offset:4px; }
+.series-tab.is-active{
+  border-color:var(--gold); border-top-width:3px;
+  background:linear-gradient(180deg,#FFFEFB,#FBF6EB);
+  box-shadow:0 30px 56px -38px rgba(61,50,40,.55);
+}
+.series-tab.is-active .series-cta{ color:var(--ink); }
+
+.letter-stage{ position:relative; margin:clamp(2.6rem,5vw,3.6rem) auto 0; max-width:720px; }
 .letter{
-  max-width:720px; margin:clamp(2.6rem,5vw,3.6rem) auto 0;
   background:
     linear-gradient(rgba(255,253,248,.93),rgba(255,253,248,.93)),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cfilter id='lp'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.66 0 0 0 0 0.58 0 0 0 0 0.45 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23lp)'/%3E%3C/svg%3E");
   border:1px solid rgba(168,144,106,.4); padding:clamp(2rem,5vw,3.4rem);
   box-shadow:0 26px 60px -40px rgba(61,50,40,.5);
+  animation:letterFade .5s var(--ease);
 }
+.letter.is-hidden{ display:none; }
 .letter .letter-kicker{ display:block; text-align:center; margin-bottom:1.5rem; font-family:var(--label); font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--gold-deep); }
 .letter .salutation{ font-family:var(--serif); font-style:italic; font-size:1.7rem; color:var(--ink); margin:0 0 1.2rem; }
 .letter p{ font-family:var(--serif); font-size:1.18rem; line-height:1.75; color:var(--ink); margin:0 0 1.1rem; }
 .letter .signoff{ margin-top:1.6rem; font-style:italic; color:var(--umber); }
-@media (max-width:700px){ .series-grid{ grid-template-columns:1fr; } .book-placeholder .bp-title{ font-size:1.8rem; } }
+.letter .whisper-quote{
+  font-family:var(--serif); font-style:italic; font-size:1.35rem; line-height:1.55;
+  text-align:center; color:var(--ink); margin:1.6rem auto;
+  padding:1.2rem 1.4rem; border-top:1px solid rgba(168,144,106,.4); border-bottom:1px solid rgba(168,144,106,.4);
+  max-width:520px;
+}
+@keyframes letterFade{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .letter{ animation:none; } }
+@media (max-width:900px){ .series-grid{ grid-template-columns:1fr; } .book-placeholder .bp-title{ font-size:1.8rem; } }
 
 /* =========================================================
    WELCOME
@@ -640,17 +695,6 @@ a.brand-card:hover{ transform:translateY(-5px); border-color:var(--gold); box-sh
 .brand-card .thread-go .arr{ display:inline-block; margin-left:.35em; transition:transform .35s var(--ease); }
 a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
 .brand-card .thread-soon{ margin-top:1rem; font-family:var(--label); font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--parchment); }
-
-/* =========================================================
-   HERITAGE
-   ========================================================= */
-.heritage{ background:linear-gradient(180deg,#ECE7DD,#F0EDE6); }
-.heritage-cats{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; max-width:1000px; margin:clamp(2.6rem,5vw,3.6rem) auto 0; }
-.heritage-cat{ background:#FFFDF8; border:1px solid rgba(168,144,106,.28); border-top:3px solid var(--gold); padding:1.7rem 1.4rem; box-shadow:0 18px 40px -34px rgba(61,50,40,.4); }
-.heritage-cat h4{ font-family:var(--serif); font-weight:600; font-size:1.22rem; margin:0 0 .5rem; line-height:1.15; }
-.heritage-cat p{ margin:0; color:var(--umber); font-size:.92rem; line-height:1.6; }
-@media (max-width:780px){ .heritage-cats{ grid-template-columns:1fr 1fr; } }
-@media (max-width:460px){ .heritage-cats{ grid-template-columns:1fr; } }
 
 /* =========================================================
    GALLERY (masonry)
@@ -827,7 +871,174 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
   .about-photo::after{ opacity:1 !important; transform:none !important; }
   .book-quote .w{ opacity:1 !important; transform:none !important; }
 }
+
+/* =========================================================
+   ADMIN OVERLAY
+   Hidden full-screen layer, opened by visiting /#admin
+   ========================================================= */
+.admin{
+  position:fixed; inset:0; z-index:200;
+  background:linear-gradient(180deg,var(--linen) 0%, #ECE7DD 100%);
+  overflow-y:auto;
+  font-family:var(--body); color:var(--ink);
+}
+body.admin-open{ overflow:hidden; }
+
+.admin-bar{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:1rem clamp(1rem,3vw,2rem); border-bottom:1px solid rgba(168,144,106,.3);
+  background:#FFFDF8;
+}
+.admin-brand{ display:flex; align-items:center; gap:.7rem; }
+.admin-brand img{ width:34px; height:34px; opacity:.85; }
+.admin-brand span{ font-family:var(--label); font-size:.72rem; letter-spacing:.26em; text-transform:uppercase; color:var(--ink); }
+.admin-bar-right{ display:flex; align-items:center; gap:1.2rem; }
+.admin-who{ font-family:var(--label); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--umber); }
+.admin-who b{ color:var(--ink); font-weight:500; }
+.admin-exit{ font-family:var(--label); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); border-bottom:1px solid transparent; padding-bottom:2px; text-decoration:none; transition:border-color .3s; }
+.admin-exit:hover{ border-color:var(--gold); }
+.admin-signout{
+  font-family:var(--label); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+  background:transparent; border:1px solid rgba(168,144,106,.4); color:var(--umber);
+  padding:.5rem .9rem; border-radius:2px; cursor:pointer; transition:all .25s;
+}
+.admin-signout:hover{ border-color:var(--gold); color:var(--ink); }
+
+.admin-wrap{ max-width:1040px; margin:0 auto; padding:clamp(1.4rem,4vw,3rem) clamp(1rem,3vw,2rem); }
+
+.admin h1{ font-family:var(--serif); font-weight:400; font-style:italic; font-size:clamp(2rem,2.4vw + 1.4rem,3rem); margin:0 0 .4rem; color:var(--ink); }
+.admin h2{ font-family:var(--serif); font-weight:600; font-size:1.6rem; margin:0; color:var(--ink); }
+.admin-lead{ color:var(--umber); margin:0 0 1.8rem; max-width:640px; }
+.admin-eyebrow{ font-family:var(--label); font-size:.66rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:.7rem; display:block; }
+.admin-sub{ color:var(--umber); margin:0 0 1.6rem; font-size:.95rem; }
+
+.admin-card{
+  background:#FFFDF8; border:1px solid rgba(168,144,106,.28); border-top:3px solid var(--gold);
+  padding:clamp(1.6rem,3vw,2.4rem);
+  box-shadow:0 18px 40px -34px rgba(61,50,40,.4);
+}
+.admin-card + .admin-card{ margin-top:1.4rem; }
+
+/* forms */
+.admin label{ display:block; font-family:var(--label); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:.45rem; }
+.admin label .admin-optional{ color:var(--umber); font-weight:300; letter-spacing:.12em; opacity:.7; margin-left:.3em; }
+.admin input[type=email],
+.admin input[type=password],
+.admin input[type=date],
+.admin input[type=text],
+.admin input[type=url],
+.admin select, .admin textarea{
+  width:100%; padding:.75rem .9rem;
+  border:1px solid rgba(168,144,106,.45); background:#fff;
+  font-family:var(--body); font-weight:300; font-size:1rem; color:var(--ink); border-radius:2px;
+  transition:border-color .25s, box-shadow .25s;
+}
+.admin input::placeholder,
+.admin textarea::placeholder{ color:rgba(122,104,85,.32); font-style:italic; }
+.admin textarea{ font-family:var(--serif); font-size:1.05rem; line-height:1.55; min-height:130px; resize:vertical; }
+.admin input:focus, .admin select:focus, .admin textarea:focus{
+  outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(168,144,106,.18);
+}
+.admin-field + .admin-field{ margin-top:1.1rem; }
+.admin-hint{ margin:.45rem 0 0; font-family:var(--body); font-size:.78rem; color:var(--umber); font-style:italic; }
+.admin-hint em{ font-style:italic; color:var(--gold-deep); }
+.admin-row{ display:grid; gap:1.1rem; }
+.admin-row.admin-cols-2{ grid-template-columns:1fr 1fr; }
+.admin-row + .admin-field, .admin-field + .admin-row{ margin-top:1.1rem; }
+@media (max-width:680px){ .admin-row.admin-cols-2{ grid-template-columns:1fr; } }
+
+/* checkbox */
+.admin-check{
+  display:flex; align-items:flex-start; gap:.7rem; cursor:pointer;
+  margin-top:1.4rem; padding:.9rem 1rem;
+  border:1px solid rgba(168,144,106,.32); background:rgba(168,144,106,.06); border-radius:2px;
+  font-family:var(--body); font-size:.92rem; color:var(--ink); text-transform:none; letter-spacing:0;
+}
+.admin-check input{ position:absolute; opacity:0; pointer-events:none; }
+.admin-check .admin-check-mark{
+  flex:0 0 18px; width:18px; height:18px; margin-top:1px;
+  border:1px solid var(--gold); background:#fff; border-radius:2px;
+  display:inline-flex; align-items:center; justify-content:center;
+  transition:background .2s, border-color .2s;
+}
+.admin-check .admin-check-mark::after{
+  content:""; width:10px; height:6px;
+  border-left:2px solid #fff; border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translate(1px,-1px) scale(0); transform-origin:center;
+  transition:transform .2s var(--ease);
+}
+.admin-check input:checked + .admin-check-mark{ background:var(--gold); border-color:var(--gold); }
+.admin-check input:checked + .admin-check-mark::after{ transform:rotate(-45deg) translate(1px,-1px) scale(1); }
+.admin-check-text{ line-height:1.4; color:var(--ink); }
+.admin-check-text b{ font-weight:500; }
+
+/* buttons */
+.admin-btn{
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-family:var(--label); font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; font-weight:400;
+  padding:.85rem 1.6rem; border-radius:2px; cursor:pointer; line-height:1; text-decoration:none;
+  border:1px solid var(--gold); background:transparent; color:var(--gold-deep);
+  transition:all .3s var(--ease);
+}
+.admin-btn:hover{ background:var(--gold); color:#fff; }
+.admin-btn-primary{ background:var(--ink); border-color:var(--ink); color:var(--linen); }
+.admin-btn-primary:hover{ background:#2c2319; color:var(--linen); }
+.admin-btn-danger{ border-color:#a85b4a; color:#a85b4a; background:transparent; }
+.admin-btn-danger:hover{ background:#a85b4a; color:#fff; }
+.admin-btn-ghost{ border-color:transparent; color:var(--umber); padding-left:.6rem; padding-right:.6rem; }
+.admin-btn-ghost:hover{ background:transparent; color:var(--ink); border-color:rgba(168,144,106,.3); }
+.admin-btn[disabled]{ opacity:.5; cursor:not-allowed; }
+
+/* login */
+.admin-login{ display:flex; min-height:calc(100vh - 130px); align-items:center; justify-content:center; }
+.admin-login-card{ width:100%; max-width:420px; }
+.admin-login-card h2{ font-family:var(--serif); font-weight:400; font-style:italic; font-size:2rem; margin:0 0 .4rem; }
+.admin-login-card .admin-btn{ width:100%; justify-content:center; margin-top:1.4rem; }
+
+/* feedback */
+.admin-msg{ font-size:.95rem; padding:.7rem .9rem; border-radius:2px; margin-bottom:1.1rem; }
+.admin-msg.error{ background:rgba(168,75,60,.08); color:#a85b4a; border:1px solid rgba(168,75,60,.3); }
+.admin-msg.ok{ background:rgba(168,144,106,.1); color:var(--gold-deep); border:1px solid rgba(168,144,106,.3); }
+
+/* events list */
+.admin-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.4rem; flex-wrap:wrap; }
+.admin-row-event{ display:grid; grid-template-columns:auto 1fr auto auto; gap:1.2rem; align-items:center; padding:1.1rem 0; border-bottom:1px solid rgba(168,144,106,.22); }
+.admin-row-event:last-child{ border-bottom:none; }
+.admin-date-block{ text-align:center; min-width:64px; }
+.admin-date-block .mon{ display:block; font-family:var(--label); font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); }
+.admin-date-block .day{ display:block; font-family:var(--serif); font-size:1.9rem; line-height:1; color:var(--ink); margin:.15rem 0; }
+.admin-date-block .yr{ display:block; font-family:var(--label); font-size:.55rem; letter-spacing:.16em; color:var(--umber); }
+.admin-row-event .title{ font-family:var(--serif); font-weight:600; font-size:1.15rem; line-height:1.25; margin:0 0 .2rem; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+.admin-row-event .badge-featured{ font-family:var(--label); font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-deep); border:1px solid var(--gold); padding:.18rem .5rem; border-radius:30px; }
+.admin-row-event .meta{ font-family:var(--label); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--umber); }
+.admin-row-event .cat{ font-family:var(--label); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; padding:.35rem .7rem; border:1px solid var(--gold); color:var(--gold-deep); border-radius:30px; white-space:nowrap; }
+.admin-row-event .actions{ display:flex; gap:.5rem; }
+.admin-row-event .actions button{
+  font-family:var(--label); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+  padding:.5rem .85rem; background:transparent; border:1px solid rgba(168,144,106,.4); color:var(--umber);
+  cursor:pointer; border-radius:2px; transition:all .25s;
+}
+.admin-row-event .actions button:hover{ border-color:var(--gold); color:var(--ink); }
+.admin-empty{ padding:2rem; text-align:center; color:var(--umber); font-style:italic; }
+
+.admin-editor{ display:none; }
+.admin-editor.is-open{ display:block; }
+.admin-editor h2{ margin:0 0 1.4rem; }
+.admin-form-actions{ display:flex; gap:.7rem; margin-top:1.6rem; flex-wrap:wrap; }
+
+.hidden{ display:none !important; }
+.admin-loader{ display:inline-block; width:14px; height:14px; border:2px solid currentColor; border-top-color:transparent; border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+@media (max-width:680px){
+  .admin-bar{ flex-wrap:wrap; gap:.6rem; }
+  .admin-bar-right{ width:100%; justify-content:space-between; gap:.6rem; }
+  .admin-row-event{ grid-template-columns:auto 1fr; grid-template-rows:auto auto; }
+  .admin-row-event .cat{ grid-column:2; justify-self:start; }
+  .admin-row-event .actions{ grid-column:1 / -1; justify-content:flex-end; }
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="progress" id="progress" aria-hidden="true"></div>
@@ -835,6 +1046,11 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
 <button class="to-top" id="toTop" type="button" aria-label="Back to top">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 L12 19 M6 11 L12 5 L18 11"/></svg>
 </button>
+
+<!-- ================= ANNOUNCEMENT BANNER ================= -->
+<aside class="announce" id="announce" aria-label="Upcoming events" hidden>
+  <a class="announce-track" href="#events" id="announceTrack" aria-label="Jump to events"></a>
+</aside>
 
 <!-- ================= NAV ================= -->
 <header class="nav" id="nav">
@@ -954,7 +1170,7 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
         <p>Gatherings, conversations and the quiet moments we share — being fully present, together, and captured along the way.</p>
         <span class="thread-go">View the gallery<span class="arr" aria-hidden="true">→</span></span>
       </a>
-      <a class="brand-card reveal" href="#heritage">
+      <a class="brand-card reveal" href="#collections">
         <span class="num">iv</span>
         <h3>Heritage</h3>
         <p>Where stories are carried forward — family stories, recipes and traditions, oral histories, and the legacies we choose to preserve.</p>
@@ -1027,11 +1243,7 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
       <h2 class="section-title">Events &amp; <em>workshops</em></h2>
     </div>
     <p class="events-intro reveal">Our gatherings bring together art, reflection and storytelling. At the heart of many is decoupage — a practice of layering and transforming simple materials into something whole, a gentle reminder that beauty can emerge even from fragments.</p>
-    <div class="filter-pills reveal" id="filterPills" role="group" aria-label="Filter events">
-      <button class="pill active" data-filter="all">All</button>
-      <button class="pill" data-filter="Workshop">Workshop</button>
-      <button class="pill" data-filter="Book talk">Book talk</button>
-    </div>
+    <div class="filter-pills reveal" id="filterPills" role="group" aria-label="Filter events" hidden></div>
     <div class="event-list reveal" id="eventList"></div>
     <!-- WhatsApp community — currently via email; swap href to a direct WhatsApp invite link when available -->
     <div class="events-cta reveal">
@@ -1064,47 +1276,55 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
       <span class="eyebrow">Writing</span>
       <h2 class="section-title"><em>Reflections</em></h2>
     </div>
-    <p class="collections-intro reveal">A collection of essays, stories, creative writing and moments of thought — shaped by faith, memory, everyday life, and the quiet things we often overlook. These writings are not rushed, and not fixed; they are pauses on a page, an attempt to notice meaning as it unfolds in ordinary and unexpected places. Take what speaks to you, and leave the rest.</p>
-    <div class="series-grid stagger">
-      <article class="series-card reveal">
-        <span class="series-kicker">A series</span>
-        <h3>Whispers of Hope</h3>
-        <p class="excerpt">"Perhaps the tears in your prayers are not signs of breaking, but signs of becoming. Seeds are watered before they bloom."</p>
-        <p>For those who are waiting. For those whose prayers feel heavy. For those who have not given up hope, even when hope feels fragile — may these words keep you company on the journey between prayer and answer.</p>
-      </article>
-      <article class="series-card reveal">
+    <p class="collections-intro reveal">Essays, letters and quiet observations — shaped by faith, memory and everyday life. Three living collections, each growing one piece at a time. Choose a thread to read from.</p>
+
+    <div class="series-grid stagger" id="seriesGrid" role="tablist" aria-label="Choose a collection to read">
+      <button type="button" class="series-card series-tab reveal is-active" role="tab" aria-selected="true" aria-controls="letter-letters" id="tab-letters" data-letter="letters">
         <span class="series-kicker">A series of letters</span>
         <h3>Letters from the House</h3>
-        <p>Reflective letters written in the spirit of companionship — for those navigating seasons of uncertainty, longing and becoming. Each begins simply, <em>Dear Heart</em>, and offers presence rather than answers — released slowly, one at a time, as a living collection that continues to grow.</p>
+        <p>Reflective letters in the spirit of companionship — for those navigating seasons of uncertainty, longing and becoming. Each begins simply, <em>Dear Heart</em>.</p>
+        <span class="series-cta">Read the first letter<span class="arr" aria-hidden="true">→</span></span>
+      </button>
+      <button type="button" class="series-card series-tab reveal" role="tab" aria-selected="false" aria-controls="letter-whispers" id="tab-whispers" data-letter="whispers">
+        <span class="series-kicker">A reflection series</span>
+        <h3>Whispers of Hope</h3>
+        <p>For those who are waiting — whose prayers feel heavy, and whose hope feels fragile. Words to keep you company on the journey between prayer and answer.</p>
+        <span class="series-cta">Read a whisper<span class="arr" aria-hidden="true">→</span></span>
+      </button>
+      <button type="button" class="series-card series-tab reveal" role="tab" aria-selected="false" aria-controls="letter-heritage" id="tab-heritage" data-letter="heritage">
+        <span class="series-kicker">From the archive</span>
+        <h3>Heritage</h3>
+        <p>Memory carried forward — the small gestures, recipes, phrases and stories that become heirlooms. A space for the things that deserve to be written down.</p>
+        <span class="series-cta">Open the archive<span class="arr" aria-hidden="true">→</span></span>
+      </button>
+    </div>
+
+    <div class="letter-stage reveal" id="letterStage">
+      <article class="letter" id="letter-letters" role="tabpanel" aria-labelledby="tab-letters" data-letter="letters">
+        <span class="letter-kicker">Letters from the House · The first letter</span>
+        <p class="salutation">Dear Heart,</p>
+        <p>You may not see it yet, but something is unfolding for you. Not always quickly. Not always in the way you imagined. But quietly, beneath what you can measure or control.</p>
+        <p>There are days when waiting feels like standing still — as if life is happening everywhere else but not here. Yet stillness is not absence. And delay is not denial. What is written for you will not miss you.</p>
+        <p>So soften your urgency. Loosen your grip on the outcome. Breathe in the space you are standing in. You are not forgotten in this moment — you are being held within it.</p>
+        <p>There is a wisdom in timing that the heart learns slowly. And sometimes, what we call &ldquo;not yet&rdquo; is simply life being careful with us. Even now, something is taking shape. Even now, you are becoming someone who can receive it.</p>
+        <p class="signoff">With patience,<br/>The One who writes your story already knows its ending.</p>
       </article>
-    </div>
 
-    <div class="letter reveal">
-      <span class="letter-kicker">Letters from the House · The first letter</span>
-      <p class="salutation">Dear Heart,</p>
-      <p>You may not see it yet, but something is unfolding for you. Not always quickly. Not always in the way you imagined. But quietly, beneath what you can measure or control.</p>
-      <p>There are days when waiting feels like standing still — as if life is happening everywhere else but not here. Yet stillness is not absence. And delay is not denial. What is written for you will not miss you.</p>
-      <p>So soften your urgency. Loosen your grip on the outcome. Breathe in the space you are standing in. You are not forgotten in this moment — you are being held within it.</p>
-      <p>There is a wisdom in timing that the heart learns slowly. And sometimes, what we call &ldquo;not yet&rdquo; is simply life being careful with us. Even now, something is taking shape. Even now, you are becoming someone who can receive it.</p>
-      <p class="signoff">With patience,<br/>The One who writes your story already knows its ending.</p>
-    </div>
-  </div>
-</section>
+      <article class="letter is-hidden" id="letter-whispers" role="tabpanel" aria-labelledby="tab-whispers" data-letter="whispers" hidden>
+        <span class="letter-kicker">Whispers of Hope · The first whisper</span>
+        <p class="salutation">For those who are waiting,</p>
+        <p>For those whose prayers feel heavy. For those who have not given up hope, even when hope feels fragile.</p>
+        <p class="whisper-quote">&ldquo;Perhaps the tears in your prayers are not signs of breaking, but signs of becoming. Seeds are watered before they bloom.&rdquo;</p>
+        <p class="signoff">May these words keep you company on the journey between prayer and answer.</p>
+      </article>
 
-<!-- ================= HERITAGE ================= -->
-<section class="heritage section-pad" id="heritage">
-  <div class="container">
-    <div class="section-head reveal">
-      <div class="enso-divider" aria-hidden="true"><img class="brush-enso" src="logo-small.png" alt="" width="200" height="200" loading="lazy" /></div>
-      <span class="eyebrow">Heritage</span>
-      <h2 class="section-title">Where stories are <em>carried forward</em></h2>
-    </div>
-    <div class="letter reveal">
-      <span class="letter-kicker">From the Heritage archive</span>
-      <p class="salutation">Some things deserve to be written down.</p>
-      <p>Not because they are extraordinary, but because they are yours. The way your grandmother folded dough with practiced hands. The phrase your father repeated whenever life became difficult. The recipe stained with fingerprints and memory. The story told so many times that everyone knows the ending.</p>
-      <p>These are the threads that hold a family together. One day, someone may search for where they came from and find the answer in the words you chose to preserve.</p>
-      <p class="signoff">Write it down — the ordinary moments are often the ones that become heirlooms.</p>
+      <article class="letter is-hidden" id="letter-heritage" role="tabpanel" aria-labelledby="tab-heritage" data-letter="heritage" hidden>
+        <span class="letter-kicker">From the Heritage archive</span>
+        <p class="salutation">Some things deserve to be written down.</p>
+        <p>Not because they are extraordinary, but because they are yours. The way your grandmother folded dough with practiced hands. The phrase your father repeated whenever life became difficult. The recipe stained with fingerprints and memory. The story told so many times that everyone knows the ending.</p>
+        <p>These are the threads that hold a family together. One day, someone may search for where they came from and find the answer in the words you chose to preserve.</p>
+        <p class="signoff">Write it down — the ordinary moments are often the ones that become heirlooms.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -1164,6 +1384,111 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
     </div>
   </div>
 </footer>
+
+<!-- ================= ADMIN OVERLAY ================= -->
+<!-- Opened by visiting /#admin — single-page admin, no separate file. -->
+<div class="admin" id="adminOverlay" hidden aria-label="Admin">
+  <div class="admin-bar">
+    <div class="admin-brand">
+      <img src="logo-small.png" alt="" width="34" height="34" />
+      <span>House of Ayaat · Admin</span>
+    </div>
+    <div class="admin-bar-right">
+      <span class="admin-who" id="adminWho"></span>
+      <a class="admin-exit" href="#" id="adminExit">← Back to site</a>
+      <button type="button" class="admin-signout hidden" id="adminSignout">Sign out</button>
+    </div>
+  </div>
+
+  <div class="admin-wrap">
+    <section class="admin-login" id="adminLogin">
+      <div class="admin-card admin-login-card">
+        <span class="admin-eyebrow">Admin sign-in</span>
+        <h2>Welcome back.</h2>
+        <p class="admin-sub">Sign in with your House of Ayaat admin email and password.</p>
+        <div id="adminLoginMsg"></div>
+        <form id="adminLoginForm" autocomplete="on">
+          <div class="admin-field">
+            <label for="adminLoginEmail">Email</label>
+            <input id="adminLoginEmail" type="email" required autocomplete="username" />
+          </div>
+          <div class="admin-field">
+            <label for="adminLoginPass">Password</label>
+            <input id="adminLoginPass" type="password" required autocomplete="current-password" />
+          </div>
+          <button class="admin-btn admin-btn-primary" id="adminLoginBtn" type="submit">Sign in</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="admin-app hidden" id="adminApp">
+      <span class="admin-eyebrow">Events</span>
+      <h1>Manage gatherings</h1>
+      <p class="admin-lead">Add, edit and remove events here. Past events fall away automatically — the homepage only shows upcoming dates.</p>
+      <div id="adminAppMsg"></div>
+      <div class="admin-card" id="adminListCard">
+        <div class="admin-toolbar">
+          <h2>All events</h2>
+          <button class="admin-btn admin-btn-primary" id="adminNewBtn" type="button">+ Add event</button>
+        </div>
+        <div id="adminEventList"><div class="admin-empty">Loading…</div></div>
+      </div>
+      <div class="admin-card admin-editor" id="adminEditorCard">
+        <h2 id="adminEditorTitle">Add event</h2>
+        <div id="adminEditorMsg"></div>
+        <form id="adminEditorForm">
+          <input type="hidden" id="aId" />
+          <div class="admin-row admin-cols-2">
+            <div class="admin-field">
+              <label for="aDate">Date</label>
+              <input id="aDate" type="date" required />
+            </div>
+            <div class="admin-field">
+              <label for="aType">Category</label>
+              <input id="aType" type="text" list="adminTypes" required />
+              <datalist id="adminTypes"></datalist>
+              <p class="admin-hint">Pick a suggestion or type a new one (e.g. <em>Workshop</em>, <em>Book talk</em>, <em>Retreat</em>).</p>
+            </div>
+          </div>
+          <div class="admin-field">
+            <label for="aTitle">Title</label>
+            <input id="aTitle" type="text" required />
+          </div>
+          <div class="admin-row admin-cols-2">
+            <div class="admin-field">
+              <label for="aVenue">Venue</label>
+              <input id="aVenue" type="text" />
+            </div>
+            <div class="admin-field">
+              <label for="aCity">City <span class="admin-optional">(optional)</span></label>
+              <input id="aCity" type="text" />
+            </div>
+          </div>
+          <div class="admin-field">
+            <label for="aRsvp">RSVP link <span class="admin-optional">(URL or mailto:)</span></label>
+            <input id="aRsvp" type="text" />
+          </div>
+          <div class="admin-field">
+            <label for="aBlurb">Description</label>
+            <textarea id="aBlurb"></textarea>
+          </div>
+          <label class="admin-check">
+            <input type="checkbox" id="aFeatured" />
+            <span class="admin-check-mark" aria-hidden="true"></span>
+            <span class="admin-check-text">
+              <b>Feature this event</b> — show it in the scrolling announcement banner at the top of the homepage.
+            </span>
+          </label>
+          <div class="admin-form-actions">
+            <button class="admin-btn admin-btn-primary" id="adminSaveBtn" type="submit">Save event</button>
+            <button class="admin-btn admin-btn-ghost" id="adminCancelBtn" type="button">Cancel</button>
+            <button class="admin-btn admin-btn-danger hidden" id="adminDeleteBtn" type="button">Delete</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -1277,26 +1602,48 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
   });
 
   /* =========================================================
-     EVENTS
-     Add real events to the EVENTS array as they are confirmed —
-     each: {date:'YYYY-MM-DD', type:'Workshop'|'Book talk'|'Online',
-            title, venue, city, rsvp, blurb}.
-     While EVENTS is empty, the "coming soon" placeholders are shown.
+     REFLECTIONS — tabbed letters
      ========================================================= */
-  var EVENTS = [
-    { date:'2026-06-27', type:'Workshop', title:'Decoupage Workshop — Ostrich Egg',
-      venue:'County Bake', city:'',
-      rsvp:'mailto:houseofayaat@outlook.com?subject=RSVP%20%E2%80%94%20Decoupage%20Workshop%20(Ostrich%20Egg)',
-      blurb:'An invitation to slow down, create with intention, and discover beauty in the process. Through the art of decoupage, you will transform a natural ostrich egg into a unique decorative piece that reflects your creativity and style.' },
-    { date:'2026-07-04', type:'Book talk', title:'Barfi Books 2 — Launch & Decoupage Session',
-      venue:'Poppy Seed Café, Montpelier Road', city:'',
-      rsvp:'mailto:houseofayaat@outlook.com?subject=RSVP%20%E2%80%94%20Barfi%20Books%202%20Launch',
-      blurb:'The launch of Barfi Books 2 — hosted and facilitated by House of Ayaat. The afternoon brings together storytelling, creative making and shared conversation around the Barfi Table, a space inspired by the warmth of culture, memory and togetherness. Guests are invited to take part in a guided decoupage session, creating while engaging with the themes of the book — an afternoon where stories are not only read, but lived through craft, reflection and shared connection.' },
-    { date:'2026-07-11', type:'Book talk', title:'Dear Waheed — In Conversation',
-      venue:'Antique Café', city:'',
-      rsvp:'mailto:houseofayaat@outlook.com?subject=RSVP%20%E2%80%94%20Dear%20Waheed%20In%20Conversation%20(by%201%20July)',
-      blurb:'A table for conversation, connection and community. Inspired by the spirit of Dear Waheed, this gathering invites guests to share lunch and conversation in an intimate setting, with guest speaker Mr Marlan Padayachee — an award-winning international fellow and seasoned activist-journalist, author, publisher and former political and diplomatic correspondent with Independent Newspapers, whose career spans five decades chronicling the lives, struggles and triumphs of many of South Africa’s sons and daughters. 11:30 AM for 12:00 noon · please RSVP by 1 July 2026.' }
-  ];
+  var seriesGrid = document.getElementById('seriesGrid');
+  if(seriesGrid){
+    var tabs = seriesGrid.querySelectorAll('.series-tab');
+    var letters = document.querySelectorAll('#letterStage .letter');
+    seriesGrid.addEventListener('click', function(e){
+      var tab = e.target.closest('.series-tab'); if(!tab) return;
+      var key = tab.getAttribute('data-letter');
+      tabs.forEach(function(t){
+        var on = t === tab;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      letters.forEach(function(L){
+        var on = L.getAttribute('data-letter') === key;
+        L.classList.toggle('is-hidden', !on);
+        if(on){ L.removeAttribute('hidden'); } else { L.setAttribute('hidden',''); }
+      });
+    });
+    // basic keyboard nav between tabs
+    seriesGrid.addEventListener('keydown', function(e){
+      if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var arr = Array.prototype.slice.call(tabs);
+      var i = arr.indexOf(document.activeElement);
+      if(i < 0) return;
+      var next = (e.key === 'ArrowRight') ? (i + 1) % arr.length : (i - 1 + arr.length) % arr.length;
+      arr[next].focus(); arr[next].click(); e.preventDefault();
+    });
+  }
+
+  /* =========================================================
+     EVENTS — fetched from Supabase
+     Events are managed via /admin.html (Supabase email + password).
+     While the events table is empty, the "coming soon" placeholders are shown.
+     ========================================================= */
+  var SUPABASE_URL = 'https://obmxxeduaqfsoxrjkxif.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ibXh4ZWR1YXFmc294cmpreGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODMyODgsImV4cCI6MjA5ODA1OTI4OH0.8mT2AbGuB-GfZkDqga157_VnUIsNVrsToaCJeOJtoAs';
+  var sb = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+  var EVENTS = [];
 
   var COMING_SOON = [
     { type:'Book talk', title:'Book talks & readings',     note:'Coming soon — new dates announced here' },
@@ -1304,10 +1651,44 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
   ];
 
   var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var eventList = document.getElementById('eventList');
+  var eventList   = document.getElementById('eventList');
+  var filterPills = document.getElementById('filterPills');
+  var announceEl  = document.getElementById('announce');
+  var announceTrack = document.getElementById('announceTrack');
   var currentFilter = 'all';
 
+  function escHtml(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
   function matchesFilter(item){ return currentFilter === 'all' || item.type === currentFilter; }
+
+  function renderPills(){
+    var types = [];
+    EVENTS.forEach(function(ev){ if(ev.type && types.indexOf(ev.type) < 0) types.push(ev.type); });
+    types.sort();
+    if(!types.length){ filterPills.setAttribute('hidden',''); filterPills.innerHTML = ''; return; }
+    filterPills.removeAttribute('hidden');
+    var html = '<button type="button" class="pill'+(currentFilter==='all'?' active':'')+'" data-filter="all">All</button>';
+    types.forEach(function(t){
+      html += '<button type="button" class="pill'+(currentFilter===t?' active':'')+'" data-filter="'+escHtml(t)+'">'+escHtml(t)+'</button>';
+    });
+    filterPills.innerHTML = html;
+  }
+
+  function renderBanner(){
+    if(!announceEl || !announceTrack) return;
+    var feats = EVENTS.filter(function(ev){ return ev.featured; })
+      .sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
+    if(!feats.length){ announceEl.setAttribute('hidden',''); announceTrack.innerHTML = ''; return; }
+    var build = function(ev){
+      var d = new Date(ev.date + 'T00:00:00');
+      var dt = d.getDate() + ' ' + MONTHS[d.getMonth()];
+      var venue = (ev.venue || '') + (ev.city ? ' · ' + ev.city : '');
+      return '<span class="announce-item"><span class="dot" aria-hidden="true"></span><span class="dt">'+escHtml(dt)+'</span> <span>'+escHtml(ev.title)+(venue ? ' · '+escHtml(venue) : '')+'</span></span>';
+    };
+    var once = feats.map(build).join('');
+    // duplicate the content so the marquee can loop seamlessly
+    announceTrack.innerHTML = once + once;
+    announceEl.removeAttribute('hidden');
+  }
 
   function renderEvents(){
     var items = EVENTS.filter(matchesFilter).sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
@@ -1317,16 +1698,16 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
         var d = new Date(ev.date + 'T00:00:00');
         var panelId = 'evp-' + i;
         var rsvp = ev.rsvp && ev.rsvp !== '#'
-          ? '<a class="btn btn-ghost" href="'+ev.rsvp+'" target="_blank" rel="noopener">RSVP</a>' : '';
+          ? '<a class="btn btn-ghost" href="'+escHtml(ev.rsvp)+'" target="_blank" rel="noopener">RSVP</a>' : '';
         return ''+
         '<div class="event">'+
           '<button class="event-head" aria-expanded="false" aria-controls="'+panelId+'">'+
             '<span class="event-date"><span class="mon">'+MONTHS[d.getMonth()]+'</span><span class="day">'+d.getDate()+'</span><span class="yr">'+d.getFullYear()+'</span></span>'+
-            '<span class="event-main"><h3>'+ev.title+'</h3><span class="meta">'+(ev.venue + (ev.city ? ' · ' + ev.city : ''))+'</span></span>'+
-            '<span class="event-cat">'+ev.type+'</span>'+
+            '<span class="event-main"><h3>'+escHtml(ev.title)+'</h3><span class="meta">'+escHtml(ev.venue + (ev.city ? ' · ' + ev.city : ''))+'</span></span>'+
+            '<span class="event-cat">'+escHtml(ev.type)+'</span>'+
             '<span class="event-toggle" aria-hidden="true"></span>'+
           '</button>'+
-          '<div class="event-detail" id="'+panelId+'"><div class="event-detail-inner"><p>'+ev.blurb+'</p>'+rsvp+'</div></div>'+
+          '<div class="event-detail" id="'+panelId+'"><div class="event-detail-inner"><p>'+escHtml(ev.blurb)+'</p>'+rsvp+'</div></div>'+
         '</div>';
       }).join('');
 
@@ -1346,16 +1727,16 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
         '<div class="event event-soon">'+
           '<div class="event-head event-head--static">'+
             '<span class="event-date soon"><img src="logo-small.png" alt="" aria-hidden="true" /></span>'+
-            '<span class="event-main"><h3>'+ev.title+'</h3><span class="meta">'+ev.note+'</span></span>'+
-            '<span class="event-cat">'+ev.type+'</span>'+
+            '<span class="event-main"><h3>'+escHtml(ev.title)+'</h3><span class="meta">'+escHtml(ev.note)+'</span></span>'+
+            '<span class="event-cat">'+escHtml(ev.type)+'</span>'+
           '</div>'+
         '</div>';
       }).join('') : '<p class="events-empty">More gatherings coming soon.</p>';
     }
   }
 
-  // filter pills
-  document.getElementById('filterPills').addEventListener('click', function(e){
+  // filter pills (delegated; works even when re-rendered)
+  filterPills.addEventListener('click', function(e){
     var btn = e.target.closest('.pill'); if(!btn) return;
     this.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
     btn.classList.add('active');
@@ -1363,7 +1744,25 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
     renderEvents();
   });
 
+  // initial render shows the "coming soon" placeholders while we fetch
   renderEvents();
+
+  function loadEvents(){
+    if(!sb) return Promise.resolve();
+    var today = new Date(); today.setHours(0,0,0,0);
+    var iso = today.toISOString().slice(0,10);
+    return sb.from('events').select('*').gte('date', iso).order('date', { ascending:true })
+      .then(function(res){
+        if(res && !res.error && Array.isArray(res.data)){
+          EVENTS = res.data;
+          renderPills();
+          renderBanner();
+          renderEvents();
+        }
+      });
+  }
+  loadEvents();
+  window.__hoaReloadEvents = loadEvents; // used by admin overlay after save
 
   /* =========================================================
      PRESS  —  add new coverage here as it is published.
@@ -1392,7 +1791,246 @@ a.brand-card:hover .thread-go .arr{ transform:translateX(4px); }
   }).join('');
   // observe newly-added press cards for reveal
   document.querySelectorAll('#pressGrid .reveal').forEach(function(el){ io.observe(el); });
+
+  /* =========================================================
+     ADMIN OVERLAY — opens on /#admin
+     ========================================================= */
+  (function(){
+    var overlay   = document.getElementById('adminOverlay');
+    if(!overlay) return;
+    var loginView = document.getElementById('adminLogin');
+    var appView   = document.getElementById('adminApp');
+    var loginForm = document.getElementById('adminLoginForm');
+    var loginEmail= document.getElementById('adminLoginEmail');
+    var loginPass = document.getElementById('adminLoginPass');
+    var loginBtn  = document.getElementById('adminLoginBtn');
+    var loginMsg  = document.getElementById('adminLoginMsg');
+    var who       = document.getElementById('adminWho');
+    var signoutBtn= document.getElementById('adminSignout');
+    var exitLink  = document.getElementById('adminExit');
+
+    var listCard   = document.getElementById('adminListCard');
+    var editorCard = document.getElementById('adminEditorCard');
+    var newBtn     = document.getElementById('adminNewBtn');
+    var eventListE = document.getElementById('adminEventList');
+    var editorForm = document.getElementById('adminEditorForm');
+    var editorTitle= document.getElementById('adminEditorTitle');
+    var editorMsg  = document.getElementById('adminEditorMsg');
+    var appMsg     = document.getElementById('adminAppMsg');
+    var cancelBtn  = document.getElementById('adminCancelBtn');
+    var deleteBtn  = document.getElementById('adminDeleteBtn');
+    var saveBtn    = document.getElementById('adminSaveBtn');
+    var typesList  = document.getElementById('adminTypes');
+    var aId      = document.getElementById('aId');
+    var aDate    = document.getElementById('aDate');
+    var aType    = document.getElementById('aType');
+    var aTitle   = document.getElementById('aTitle');
+    var aVenue   = document.getElementById('aVenue');
+    var aCity    = document.getElementById('aCity');
+    var aRsvp    = document.getElementById('aRsvp');
+    var aBlurb   = document.getElementById('aBlurb');
+    var aFeatured= document.getElementById('aFeatured');
+
+    var msgTimer;
+    function setMsg(target, text, kind){
+      if(!text){ target.innerHTML = ''; return; }
+      target.innerHTML = '<div class="admin-msg '+(kind||'ok')+'">'+escHtml(text)+'</div>';
+      if(kind === 'ok'){
+        clearTimeout(msgTimer);
+        msgTimer = setTimeout(function(){ target.innerHTML = ''; }, 3500);
+      }
+    }
+
+    function openOverlay(){
+      overlay.removeAttribute('hidden');
+      document.body.classList.add('admin-open');
+      sb && sb.auth.getSession().then(function(res){
+        if(res && res.data && res.data.session){ showApp(res.data.session); }
+        else { showLogin(); }
+      });
+    }
+    function closeOverlay(){
+      overlay.setAttribute('hidden','');
+      document.body.classList.remove('admin-open');
+    }
+
+    function showLogin(){
+      loginView.classList.remove('hidden');
+      appView.classList.add('hidden');
+      signoutBtn.classList.add('hidden');
+      who.textContent = '';
+    }
+    function showApp(session){
+      loginView.classList.add('hidden');
+      appView.classList.remove('hidden');
+      signoutBtn.classList.remove('hidden');
+      who.innerHTML = 'Signed in as <b>'+escHtml(session.user.email)+'</b>';
+      loadList();
+    }
+
+    if(loginForm){
+      loginForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(!sb){ setMsg(loginMsg, 'Supabase client not loaded.', 'error'); return; }
+        setMsg(loginMsg, '', 'ok');
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<span class="admin-loader"></span> Signing in…';
+        sb.auth.signInWithPassword({ email: loginEmail.value.trim(), password: loginPass.value })
+          .then(function(res){
+            loginBtn.disabled = false; loginBtn.textContent = 'Sign in';
+            if(res.error){ setMsg(loginMsg, res.error.message || 'Could not sign in.', 'error'); return; }
+            showApp(res.data.session);
+          });
+      });
+    }
+
+    signoutBtn.addEventListener('click', function(){
+      if(!sb) return;
+      sb.auth.signOut().then(function(){
+        loginEmail.value = ''; loginPass.value = '';
+        showLogin();
+      });
+    });
+
+    exitLink.addEventListener('click', function(e){
+      e.preventDefault();
+      if(location.hash === '#admin'){ history.pushState(null, '', location.pathname + location.search); }
+      closeOverlay();
+    });
+
+    function loadList(){
+      if(!sb){ return; }
+      eventListE.innerHTML = '<div class="admin-empty">Loading…</div>';
+      sb.from('events').select('*').order('date', { ascending:true }).then(function(res){
+        if(res.error){ setMsg(appMsg, res.error.message, 'error'); eventListE.innerHTML = ''; return; }
+        var rows = res.data || [];
+        // refresh datalist of known categories
+        var types = [];
+        rows.forEach(function(r){ if(r.type && types.indexOf(r.type) < 0) types.push(r.type); });
+        types.sort();
+        typesList.innerHTML = types.map(function(t){ return '<option value="'+escHtml(t)+'"></option>'; }).join('');
+
+        if(!rows.length){
+          eventListE.innerHTML = '<div class="admin-empty">No events yet. Click <strong>Add event</strong> to create the first one.</div>';
+          return;
+        }
+        eventListE.innerHTML = rows.map(function(ev){
+          var d = new Date(ev.date + 'T00:00:00');
+          var venue = (ev.venue || '') + (ev.city ? ' · ' + ev.city : '');
+          var badge = ev.featured ? '<span class="badge-featured" title="Showing in the announcement banner">★ Banner</span>' : '';
+          return ''+
+          '<div class="admin-row-event">'+
+            '<div class="admin-date-block">'+
+              '<span class="mon">'+MONTHS[d.getMonth()]+'</span>'+
+              '<span class="day">'+d.getDate()+'</span>'+
+              '<span class="yr">'+d.getFullYear()+'</span>'+
+            '</div>'+
+            '<div>'+
+              '<p class="title">'+escHtml(ev.title)+badge+'</p>'+
+              '<p class="meta">'+escHtml(venue)+'</p>'+
+            '</div>'+
+            '<span class="cat">'+escHtml(ev.type)+'</span>'+
+            '<div class="actions">'+
+              '<button type="button" class="edit" data-id="'+escHtml(ev.id)+'">Edit</button>'+
+            '</div>'+
+          '</div>';
+        }).join('');
+        eventListE.querySelectorAll('.edit').forEach(function(b){
+          b.addEventListener('click', function(){
+            var id = b.getAttribute('data-id');
+            var row = rows.find(function(r){ return String(r.id) === String(id); });
+            if(row) openEditor(row);
+          });
+        });
+      });
+    }
+
+    function openEditor(row){
+      editorCard.classList.add('is-open');
+      listCard.classList.add('hidden');
+      setMsg(editorMsg, '', 'ok');
+      if(row){
+        editorTitle.textContent = 'Edit event';
+        aId.value      = row.id;
+        aDate.value    = row.date || '';
+        aType.value    = row.type || '';
+        aTitle.value   = row.title || '';
+        aVenue.value   = row.venue || '';
+        aCity.value    = row.city || '';
+        aRsvp.value    = row.rsvp || '';
+        aBlurb.value   = row.blurb || '';
+        aFeatured.checked = !!row.featured;
+        deleteBtn.classList.remove('hidden');
+      } else {
+        editorTitle.textContent = 'Add event';
+        aId.value = ''; aDate.value = ''; aType.value = 'Workshop'; aTitle.value = '';
+        aVenue.value = ''; aCity.value = ''; aRsvp.value = ''; aBlurb.value = '';
+        aFeatured.checked = false;
+        deleteBtn.classList.add('hidden');
+      }
+      overlay.scrollTo({ top:0, behavior:'smooth' });
+    }
+    function closeEditor(){
+      editorCard.classList.remove('is-open');
+      listCard.classList.remove('hidden');
+    }
+
+    newBtn.addEventListener('click', function(){ openEditor(null); });
+    cancelBtn.addEventListener('click', closeEditor);
+
+    editorForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!sb) return;
+      setMsg(editorMsg, '', 'ok');
+      var payload = {
+        date:  aDate.value,
+        type:  aType.value.trim() || 'Workshop',
+        title: aTitle.value.trim(),
+        venue: aVenue.value.trim(),
+        city:  aCity.value.trim(),
+        rsvp:  aRsvp.value.trim(),
+        blurb: aBlurb.value.trim(),
+        featured: !!aFeatured.checked
+      };
+      if(!payload.date || !payload.title){ setMsg(editorMsg, 'Date and title are required.', 'error'); return; }
+
+      saveBtn.disabled = true; saveBtn.innerHTML = '<span class="admin-loader"></span> Saving…';
+      var p = aId.value
+        ? sb.from('events').update(payload).eq('id', aId.value)
+        : sb.from('events').insert([payload]);
+      p.then(function(res){
+        saveBtn.disabled = false; saveBtn.textContent = 'Save event';
+        if(res.error){ setMsg(editorMsg, res.error.message, 'error'); return; }
+        closeEditor();
+        setMsg(appMsg, aId.value ? 'Event updated.' : 'Event added.', 'ok');
+        loadList();
+        if(typeof window.__hoaReloadEvents === 'function'){ window.__hoaReloadEvents(); }
+      });
+    });
+
+    deleteBtn.addEventListener('click', function(){
+      if(!aId.value || !sb) return;
+      if(!confirm('Delete this event? This cannot be undone.')) return;
+      deleteBtn.disabled = true;
+      sb.from('events').delete().eq('id', aId.value).then(function(res){
+        deleteBtn.disabled = false;
+        if(res.error){ setMsg(editorMsg, res.error.message, 'error'); return; }
+        closeEditor();
+        setMsg(appMsg, 'Event deleted.', 'ok');
+        loadList();
+        if(typeof window.__hoaReloadEvents === 'function'){ window.__hoaReloadEvents(); }
+      });
+    });
+
+    function syncFromHash(){
+      if(location.hash === '#admin'){ openOverlay(); } else { closeOverlay(); }
+    }
+    window.addEventListener('hashchange', syncFromHash);
+    syncFromHash();
+  })();
+
 })();
 </script>
+
 </body>
 </html>
